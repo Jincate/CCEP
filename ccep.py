@@ -5,7 +5,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.tensorboard import SummaryWriter
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -195,17 +194,15 @@ class TD3(object):
 			target_Q1 = reward + not_done * self.discount * target_Q1
 			target_Q2 = reward + not_done * self.discount * target_Q2
 			target_Q = torch.min(target_Q1, target_Q2)
+			
 		# Get current Q estimates
 		current_Q1, current_Q2 = self.critic(state, action)
-		# current_Q2 = self.op_critic(state, action)
-		# current_Q3, current_Q4 = self.single_critic(state, action)
-		# current_QQ1, current_QQ2 = self.critic(state, action, zero_context)
+		
 		# Compute critic loss
 		critic_loss = F.mse_loss(current_Q1, target_Q) + F.mse_loss(current_Q2, target_Q)
-		error = current_Q1 + current_Q2
+		
 		# Optimize the critic
 		self.critic_optimizer.zero_grad()
-		# self.op_optimizer.zero_grad()
 		critic_loss.backward()
 		self.critic_optimizer.step()
 
@@ -234,12 +231,14 @@ class TD3(object):
 			current_Q3, _ = self.critic(state, action3)
 			_ , current_Q4 = self.critic(state, action4)
 			actor_loss = 0.25 * (-torch.min(current_Q1, current_Q2).mean() - torch.max(current_QQ1, current_QQ2).mean() - current_Q3.mean() - current_Q4.mean())
+			
 			# Optimize the actor 
 			self.actor_optimizer.zero_grad()
 			actor_loss.backward()
 			self.actor_optimizer.step()
 			loss = F.mse_loss(action1, action2)
 			self.logger.add_scalar("loss", loss, self.total_it)
+			
 			# Update the frozen target models
 			for param, target_param in zip(self.critic.parameters(), self.critic_target.parameters()):
 				target_param.data.copy_(self.tau * param.data + (1 - self.tau) * target_param.data)
