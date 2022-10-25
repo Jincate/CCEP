@@ -5,10 +5,7 @@ import argparse
 import os
 
 import utils
-import TD3
-import OurDDPG
-import DDPG
-
+import CCEP
 
 # Runs policy for X episodes and returns average reward
 # A fixed seed is used for the eval environment
@@ -36,8 +33,8 @@ def eval_policy(policy, env_name, seed, eval_episodes=10):
 if __name__ == "__main__":
 	
 	parser = argparse.ArgumentParser()
-	parser.add_argument("--policy", default="TD3")                  # Policy name (TD3, DDPG or OurDDPG)
-	parser.add_argument("--env", default="HalfCheetah-v2")          # OpenAI gym environment name
+	parser.add_argument("--policy", default="CCEP")                  # Policy name (TD3, DDPG or OurDDPG)
+	parser.add_argument("--env", default="HalfCheetah-v3")          # OpenAI gym environment name
 	parser.add_argument("--seed", default=0, type=int)              # Sets Gym, PyTorch and Numpy seeds
 	parser.add_argument("--start_timesteps", default=25e3, type=int)# Time steps initial random policy is used
 	parser.add_argument("--eval_freq", default=5e3, type=int)       # How often (time steps) we evaluate
@@ -86,17 +83,12 @@ if __name__ == "__main__":
 	}
 
 	# Initialize policy
-	if args.policy == "TD3":
-		# Target policy smoothing is scaled wrt the action scale
-		kwargs["policy_noise"] = args.policy_noise * max_action
-		kwargs["noise_clip"] = args.noise_clip * max_action
-		kwargs["policy_freq"] = args.policy_freq
-		kwargs["num_skills"] = args.num_skills
-		policy = TD3.TD3(**kwargs)
-	elif args.policy == "OurDDPG":
-		policy = OurDDPG.DDPG(**kwargs)
-	elif args.policy == "DDPG":
-		policy = DDPG.DDPG(**kwargs)
+	# Target policy smoothing is scaled wrt the action scale
+	kwargs["policy_noise"] = args.policy_noise * max_action
+	kwargs["noise_clip"] = args.noise_clip * max_action
+	kwargs["policy_freq"] = args.policy_freq
+	kwargs["num_skills"] = args.num_skills
+	policy = CCEP.CCEP(**kwargs)
 
 	if args.load_model != "":
 		policy_file = file_name if args.load_model == "default" else args.load_model
@@ -133,25 +125,16 @@ if __name__ == "__main__":
 		# Perform action
 		next_state, reward, done, _ = env.step(action) 
 		done_bool = float(done) if episode_timesteps < env._max_episode_steps else 0
-
-		state_prob = policy.state_prob(initial_context, state)
-		#if int(context[0]) == 1:
-		#	pseudo_reward = reward
-		#else:
-		#	pseudo_reward = np.log(max(state_prob, 1e-6)) + np.log(args.num_skills)
 		pseudo_reward = reward
 		index = np.random.randint(0, high=args.num_skills)
 		next_context = np.zeros(args.num_skills)
 		next_context[index] = 1
-		#if np.random.uniform() > epsilon:
-		#	next_context = initial_context
-		# Store data in replay buffer
 		replay_buffer.add(state, action, initial_context, context, next_state, next_context, reward, pseudo_reward, done_bool)
 		
 		state = next_state
 		context = next_context
 		episode_reward += reward
-		# avg_reward += pseudo_reward
+
 		# Train agent after collecting sufficient data
 		
 		if t >= args.start_timesteps:
@@ -165,11 +148,7 @@ if __name__ == "__main__":
 			episode_reward = 0
 			episode_timesteps = 0
 			episode_num += 1 
-			# initial_index = np.random.randint(1, high=args.num_skills)
-			# initial_context = np.zeros(args.num_skills)
-			# initial_context[initial_index] = 1
-			# context = initial_context
-			# next_context = initial_context
+
 		# Evaluate episode
 		if (t + 1) % args.eval_freq == 0:
 			evaluations.append(eval_policy(policy, args.env, args.seed))
