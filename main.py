@@ -33,7 +33,7 @@ def eval_policy(policy, env_name, seed, eval_episodes=10):
 if __name__ == "__main__":
 	
 	parser = argparse.ArgumentParser()
-	parser.add_argument("--policy", default="CCEP")                  # Policy name (TD3, DDPG or OurDDPG)
+	parser.add_argument("--policy", default="CCEP")                 # Policy name (TD3, DDPG or OurDDPG)
 	parser.add_argument("--env", default="HalfCheetah-v3")          # OpenAI gym environment name
 	parser.add_argument("--seed", default=0, type=int)              # Sets Gym, PyTorch and Numpy seeds
 	parser.add_argument("--start_timesteps", default=25e3, type=int)# Time steps initial random policy is used
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 	parser.add_argument("--policy_freq", default=2, type=int)       # Frequency of delayed policy updates
 	parser.add_argument("--save_model", action="store_true")        # Save model and optimizer parameters
 	parser.add_argument("--load_model", default="")                 # Model load file name, "" doesn't load, "default" uses file_name
-	parser.add_argument("--num_skills", default=10, type=int)       # Number of skills to learn
+	parser.add_argument("--num_skills", default=4, type=int)        # Number of skills to learn
 	args = parser.parse_args()
 
 	file_name = f"{args.policy}_{args.env}_{args.seed}"
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 		index = np.random.randint(0, high=args.num_skills)
 		next_context = np.zeros(args.num_skills)
 		next_context[index] = 1
-		replay_buffer.add(state, action, initial_context, context, next_state, next_context, reward, pseudo_reward, done_bool)
+		replay_buffer.add(state, action, context, next_state, next_context, reward, pseudo_reward, done_bool)
 		
 		state = next_state
 		context = next_context
