@@ -5,9 +5,22 @@ PyTorch implementation of Centralized Cooperative Exploration Policy(CCEP). This
 This code is developed with python 3.7 and the networks are trained using [PyTorch 1.10.2](https://github.com/pytorch/pytorch). The version of [MuJoCo](https://mujoco.org) is 2.1.2.
  
 ## Installation
+To get the environment installed correctly, you will need to [download](https://mujoco.org/download/mujoco210-linux-x86_64.tar.gz) mujoco files and have the path added to your PYTHONPATH environment variable.
+```Shell
+sudo mkdir /home/xxx/.mujoco
+sudo vim ~/.bashrc
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/xxx/.mujoco/mujoco210/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/nvidia
+
+source ~/.bashrc
+```
+Install mujoco.
 ```Python
 pip3 install -U 'mujoco-py<2.2,>=2.1'
 ```
+A more explicit installation of mujoco can be found [here](https://github.com/openai/mujoco-py#install-mujoco):
+
 ## Usage
 
 Experiments on single environments can be run by calling:
