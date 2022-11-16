@@ -9,7 +9,7 @@ To get the environment installed correctly, you will need to [download](https://
 ```Shell
 
 # Download MuJoCo files
-$ sudo mkdir /home/.mujoco
+sudo mkdir /home/.mujoco
 cp mujoco210-linux-x86_64.tar.gz ~/.mujoco
 cd .mujoco
 tar -zxvf mujoco210-linux-x86_64.tar.gz
