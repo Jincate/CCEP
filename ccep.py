@@ -138,7 +138,7 @@ class DoubleCritic(nn.Module):
 		return q1
 
 
-class TD3(object):
+class CCEP(object):
 	def __init__(
 		self,
 		state_dim,
