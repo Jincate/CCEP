@@ -33,5 +33,5 @@ A more explicit installation of mujoco can be found [here](https://github.com/op
 Experiments on single environments can be run by calling:
 
 ```Python
-python main.py --env HalfCheetah-v3 --num_skills 4
+python main.py --env HalfCheetah-v3
 ```
