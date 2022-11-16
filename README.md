@@ -6,7 +6,9 @@ This code is developed with python 3.7 and the networks are trained using PyTorc
  
 # Installation
 
-$ pip3 install -U 'mujoco-py<2.2,>=2.1' $
+'''python
+pip3 install -U 'mujoco-py<2.2,>=2.1'
+'''
 
 # Usage
 
