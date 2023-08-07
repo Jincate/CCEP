@@ -36,4 +36,4 @@ Experiments on single environments can be run by calling:
 python main.py --env HalfCheetah-v3
 ```
 
-$= \mathcal{H}(z) + \mathcal{H}(\rho|z) - \mathcal{H}(\rho)$
+$= \mathcal{H}(z) + \mathcal{H}(\rho|z) - \mathcal{H}(\rho) \propto \mathbb{E}_{(s,a,z)\sim \rho(s,a,z)}$
