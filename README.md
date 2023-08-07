@@ -35,3 +35,5 @@ Experiments on single environments can be run by calling:
 ```Python
 python main.py --env HalfCheetah-v3
 ```
+
+$= \mathcal{H}(z) + \mathcal{H}(\rho|z) - \mathcal{H}(\rho)$
