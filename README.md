@@ -36,4 +36,4 @@ Experiments on single environments can be run by calling:
 python main.py --env HalfCheetah-v3
 ```
 
-$= \mathcal{H}(z) + \mathcal{H}(\rho|z) - \mathcal{H}(\rho) \propto \frac{1}{n}\rho(s,a|z_k)-\log \rho(s,a|z)$
+$= \mathcal{H}(z) + \mathcal{H}(\rho|z) - \mathcal{H}(\rho) \propto \frac{1}{n}(\sum_{k=1}^{n} \rho(s,a|z_k)-\log \rho(s,a|z))$
